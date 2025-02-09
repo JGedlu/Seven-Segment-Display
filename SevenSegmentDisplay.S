@@ -29,62 +29,54 @@ main:
 @ #0b0111111, #0b0001100, #0b1011011, #0b0011110, #0b1101100, #0b1110110 ,#0b1110111, #0b0011100, #0b1111111, #0b1111100
 @    GFABCDE
 
+        MOV R0, #16 @correct number of left shifts to get input into the corresponding gpio output
+
         loop:
-        MOV R0, #16
         MOV R5, #0b0111111 @ loading data for the digit zero into register 5
         BL gpio_on @ uses the data in register 5 to stream the corresponding output in gpio
         BL delay
         BL gpio_off
 
-        MOV R0, #16
         MOV R5, #0b0001100 @ loading data for the digit one into register 5
         BL gpio_on
         BL delay
         BL gpio_off
 
-        MOV R0, #16
         MOV R5, #0b1011011 @ loading data for the digit two into register 5
         BL gpio_on
         BL delay
         BL gpio_off
 
-        MOV R0, #16
         MOV R5, #0b1011110 @ loading data for the digit three into register 5
         BL gpio_on
         BL delay
         BL gpio_off
 
-        MOV R0, #16
         MOV R5, #0b1101100 @ loading data for the digit four into register 5
         BL gpio_on
         BL delay
         BL gpio_off
 
-        MOV R0, #16
         MOV R5, #0b1110110 @ loading data for the digit five into register 5
         BL gpio_on
         BL delay
         BL gpio_off
 
-        MOV R0, #16
         MOV R5, #0b1110111 @ loading data for the digit six into register 5
         BL gpio_on
         BL delay
         BL gpio_off
 
-        MOV R0, #16
         MOV R5, #0b0011100 @ loading data for the digit seven into register 5
         BL gpio_on
         BL delay
         BL gpio_off
 
-        MOV R0, #16
         MOV R5, #0b1111111 @ loading data for the digit eight into register 5
         BL gpio_on
         BL delay
         BL gpio_off
 
-        MOV R0, #16
         MOV R5, #0b1111100 @ loading data for the digit nine into register 5
         BL gpio_on
         BL delay
