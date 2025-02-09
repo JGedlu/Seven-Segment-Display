@@ -1,13 +1,92 @@
-# include "hardware/regs/addressmap.h"
-# include "hardware/regs/sio.h"
-# include "hardware/regs/io_bank0.h"
-# include "hardware/regs/pads_bank0.h"
+#include "hardware/regs/addressmap.h"
+#include "hardware/regs/sio.h"
+#include "hardware/regs/io_bank0.h"
+#include "hardware/regs/pads_bank0.h"
+
+.thumb_func @ Tell the assembler which type of ARM
+.global main @ Provide program starting address to linker
 
 .align 4
-gpiobase: .word SIO_BASE
-iobank0: .word IO_BANK0_BASE
-padsbank0: .word PADS_BANK0_BASE
-setoffset: .word REG_ALIAS_SET_BITS
+main:
+        MOV R0, #16
+        BL gpioinit
+        MOV R0, #17
+        BL gpioinit
+        MOV R0, #18
+        BL gpioinit
+        MOV R0, #19
+        BL gpioinit
+        MOV R0, #20
+        BL gpioinit
+        MOV R0, #21
+        BL gpioinit
+        MOV R0, #22
+        BL gpioinit
+
+
+@ #0b0111111, #0b0001100, #0b1011011, #0b0011110, #0b1101100, #0b1110110 ,#0b1110111, #0b0011100, #0b1111111, #0b1111100
+        loop:
+        MOV R0, #16
+        MOV R5, #0b0111111 @ loading data for the digit zero into register 5
+        BL gpio_on @ uses the data in register 5 to stream the corresponding output in gpio
+        BL delay
+        BL gpio_off
+
+        MOV R0, #16
+        MOV R5, #0b0001100 @ loading data for the digit one into register 5
+        BL gpio_on
+        BL delay
+        BL gpio_off
+
+        MOV R0, #16
+        MOV R5, #0b1011011 @ loading data for the digit two into register 5
+        BL gpio_on
+        BL delay
+        BL gpio_off
+
+        MOV R0, #16
+        MOV R5, #0b1011110 @ loading data for the digit three into register 5
+        BL gpio_on
+        BL delay
+        BL gpio_off
+
+        MOV R0, #16
+        MOV R5, #0b1101100 @ loading data for the digit four into register 5
+        BL gpio_on
+        BL delay
+        BL gpio_off
+
+        MOV R0, #16
+        MOV R5, #0b1110110 @ loading data for the digit five into register 5
+        BL gpio_on
+        BL delay
+        BL gpio_off
+
+        MOV R0, #16
+        MOV R5, #0b1110111 @ loading data for the digit six into register 5
+        BL gpio_on
+        BL delay
+        BL gpio_off
+
+        MOV R0, #16
+        MOV R5, #0b0011100 @ loading data for the digit seven into register 5
+        BL gpio_on
+        BL delay
+        BL gpio_off
+
+        MOV R0, #16
+        MOV R5, #0b1111111 @ loading data for the digit eight into register 5
+        BL gpio_on
+        BL delay
+        BL gpio_off
+
+        MOV R0, #16
+        MOV R5, #0b1111100 @ loading data for the digit nine into register 5
+        BL gpio_on
+        BL delay
+        BL gpio_off
+
+        B loop
 
 gpioinit:
 @ initialize the GPIO
@@ -34,22 +113,35 @@ gpioinit:
         @ jumped here using BX or BLX for this to work
 
 gpio_on:
-        MOV R3, #1
+        MOV R3, R5
         LSL R3, R0
         LDR R2, gpiobase
         STR R3, [R2, #SIO_GPIO_OUT_SET_OFFSET]
         BX LR
 
 gpio_off:
-        MOV R3, #1
+        MOV R3, #0b1111111
         LSL R3, R0
         LDR R2, gpiobase
         STR R3, [R2, #SIO_GPIO_OUT_CLR_OFFSET]
         BX LR
 
-.thumb_func @ Tell the assembler which type of ARM
-.global main @ Provide program starting address to linker
+delay:
+        MOV R2, #0
+        MOV R3, #0xFF
+        LSL R3, #17
+        indelay:
+        ADD R2, #1
+        CMP R2, R3
+        BCC indelay @ loop until R2 hits a value of 0 xFF
+        BX LR
 
-main:
-        ADD R0, #1
+.align 4
+        gpiobase: .word SIO_BASE
+        iobank0: .word IO_BANK0_BASE
+        padsbank0: .word PADS_BANK0_BASE
+        setoffset: .word REG_ALIAS_SET_BITS
+
+
+
         
