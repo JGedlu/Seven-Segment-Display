@@ -8,23 +8,27 @@
 
 .align 4
 main:
-        MOV R0, #16
+
+        @ pin initialization for all pins corresponding to the pins for the seven segment display
+        MOV R0, #16 @pin G
         BL gpioinit
-        MOV R0, #17
+        MOV R0, #17 @pin F
         BL gpioinit
-        MOV R0, #18
+        MOV R0, #18 @pin A
         BL gpioinit
-        MOV R0, #19
+        MOV R0, #19 @pin B
         BL gpioinit
-        MOV R0, #20
+        MOV R0, #20 @pin C
         BL gpioinit
-        MOV R0, #21
+        MOV R0, #21 @pin D
         BL gpioinit
-        MOV R0, #22
+        MOV R0, #22 @pin E
         BL gpioinit
 
-
+@  0           1           2           3            4          5           6           7           8           9
 @ #0b0111111, #0b0001100, #0b1011011, #0b0011110, #0b1101100, #0b1110110 ,#0b1110111, #0b0011100, #0b1111111, #0b1111100
+@    GFABCDE
+
         loop:
         MOV R0, #16
         MOV R5, #0b0111111 @ loading data for the digit zero into register 5
@@ -113,14 +117,14 @@ gpioinit:
         @ jumped here using BX or BLX for this to work
 
 gpio_on:
-        MOV R3, R5
+        MOV R3, R5 @turns on pins specified in register 5
         LSL R3, R0
         LDR R2, gpiobase
         STR R3, [R2, #SIO_GPIO_OUT_SET_OFFSET]
         BX LR
 
 gpio_off:
-        MOV R3, #0b1111111
+        MOV R3, #0b1111111 @turns all of the pins in the output off
         LSL R3, R0
         LDR R2, gpiobase
         STR R3, [R2, #SIO_GPIO_OUT_CLR_OFFSET]
@@ -129,7 +133,7 @@ gpio_off:
 delay:
         MOV R2, #0
         MOV R3, #0xFF
-        LSL R3, #17
+        LSL R3, #17 @changes the end of the timer to 0xFF * 2^17 so it lasts longer (about a second)
         indelay:
         ADD R2, #1
         CMP R2, R3
